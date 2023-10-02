@@ -35,8 +35,8 @@ public class CharacterView : MonoBehaviour
 
     private void FixedUpdate()
     {
-        control.Move(moveAction);
         control.Look(moveAction);
+        control.Move(moveAction);
     }
 
     public void SetControl(CharacterControl control)
