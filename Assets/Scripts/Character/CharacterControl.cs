@@ -1,3 +1,4 @@
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -71,11 +72,12 @@ public class CharacterControl
     }
     #endregion
 
-    #region Aiming
-    public void CrosshairCheck()
-    { 
-        Ray ray = new Ray(view.PlayerCamera.transform.position, view.PlayerCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Swing")))
+    #region Crosshair
+    public RaycastHit CrosshairCheck()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(view.Crosshair.transform.position);
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMasks.Swing))
         {
             view.Crosshair.color = Color.green;
         }
@@ -83,6 +85,43 @@ public class CharacterControl
         {
             view.Crosshair.color = Color.red;
         }
+        return hit;
+    }
+    #endregion
+
+    #region Swinging
+    public void StartSwing(InputAction.CallbackContext context)
+    {
+        RaycastHit hit = CrosshairCheck();
+
+        if (hit.collider == null)
+        {
+            return;
+        }
+        view.swingJoint = view.gameObject.AddComponent<SpringJoint>();
+        view.swingJoint.autoConfigureConnectedAnchor = false;
+        view.swingJoint.connectedAnchor = hit.point;
+
+        float distance = Vector3.Distance(view.transform.position, hit.point);
+
+        view.swingJoint.maxDistance = distance * 0.8f;
+        view.swingJoint.minDistance = distance * 0.25f;
+
+        view.swingJoint.spring = view.spring;
+        view.swingJoint.damper = view.damper;
+        view.swingJoint.massScale = view.massScale;
+
+        view.lineRenderer.positionCount = 2;
+    }
+
+    public void EndSwing(InputAction.CallbackContext context)
+    {
+        if (view.swingJoint == null)
+        {
+            return;
+        }
+        Object.Destroy(view.swingJoint);
+        view.lineRenderer.positionCount = 0;
     }
     #endregion
 }
