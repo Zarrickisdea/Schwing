@@ -1,16 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterView : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private Image crosshair;
     
     private Schwing playerActions;
     private InputAction moveAction;
 
     public Rigidbody Rb { get => rb; }
+    public Image Crosshair { get => crosshair; }
+    public Camera PlayerCamera { get => playerCamera; }
 
     private CharacterControl control;
 
@@ -33,10 +37,18 @@ public class CharacterView : MonoBehaviour
         playerActions.Player.Disable();
     }
 
+    private void Update()
+    {
+        control.CrosshairCheck();
+    }
     private void FixedUpdate()
     {
         control.Look(moveAction);
         control.Move(moveAction);
+        if (rb.velocity.y < 0f)
+        {
+            rb.velocity -= Vector3.down * Time.fixedDeltaTime * Physics.gravity.y;
+        }
     }
 
     public void SetControl(CharacterControl control)

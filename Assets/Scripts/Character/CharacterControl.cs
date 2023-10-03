@@ -59,15 +59,29 @@ public class CharacterControl
     public bool IsGrounded()
     {
         Ray ray = new Ray(view.transform.position + Vector3.up * 0.25f, Vector3.down);
-        Debug.DrawRay(ray.origin, ray.direction, Color.red, 0.1f);
-        return Physics.Raycast(ray, out RaycastHit hit, 0.3f);
+        return Physics.Raycast(ray, out RaycastHit hit, 2f);
     }
 
     public void Jump(InputAction.CallbackContext context)
     {
         if (IsGrounded())
         {
-            view.Rb.AddForce(Vector3.up * 10, ForceMode.Impulse);
+            movementDirection += Vector3.up * 10;
+        }
+    }
+    #endregion
+
+    #region Aiming
+    public void CrosshairCheck()
+    { 
+        Ray ray = new Ray(view.PlayerCamera.transform.position, view.PlayerCamera.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Swing")))
+        {
+            view.Crosshair.color = Color.green;
+        }
+        else
+        {
+            view.Crosshair.color = Color.red;
         }
     }
     #endregion
