@@ -1,17 +1,34 @@
-using UnityEditor.ShaderGraph.Internal;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelGenerator : MonoBehaviour
 {
+    #region Inspector Variables
+    [Header("Level Generation")]
     [SerializeField] private GameObject walls;
     [SerializeField] private GameObject swingCube;
     [SerializeField] private GameObject startPlane;
     [SerializeField] private GameObject spawn;
-    [SerializeField] private int levelLength;
-    [SerializeField] private float cubeZSeperation;
+
+    [Header("Level Settings")]
+    [SerializeField] private int numberOfCubes;
+    [SerializeField] private float cubeXPosition;
     [SerializeField] private float initialYHeight;
+    [SerializeField] private float cubeZSeperation;
+    [SerializeField] private float perlinNoiseScale;
+
+    [Header("UI")]
     [SerializeField] private Button button;
+    #endregion
+
+    #region Private
+    private List<GameObject> cubes = new List<GameObject>();
+    private Queue<GameObject> spawnTriggers = new Queue<GameObject>();
+    #endregion
+
+    #region Public
+    #endregion
 
     private void Awake()
     {
@@ -21,30 +38,38 @@ public class LevelGenerator : MonoBehaviour
 
     private void CreateLevel()
     {
-        GameObject[] cubes = GameObject.FindGameObjectsWithTag("Swing");
-        if (cubes.Length > 0)
+        if (cubes.Count > 0)
         {
             DestroyCubes(cubes);
         }
 
-        for (int i = 0; i < levelLength; i++)
+        if (spawnTriggers.Count > 0)
+        {
+            GameObject toDestroy = spawnTriggers.Dequeue();
+            Destroy(toDestroy);
+        }
+
+        for (int i = 0; i < numberOfCubes; i++)
         {
             float randomX = Random.value;
             float randomY = Random.value;
-            float positionOffset = Mathf.PerlinNoise((i + 1) * randomX, (i + 1) * randomY) * cubeZSeperation;
+            float positionOffset = Mathf.PerlinNoise((i + 1) * randomX, (i + 1) * randomY) * perlinNoiseScale;
 
-            Vector3 cubeSpawnPosition = new Vector3(0, initialYHeight + positionOffset, (i + 1) * cubeZSeperation);
+            float side = Random.value < 0.5f ? -1 : 1;
+            Vector3 cubeSpawnPosition = new Vector3(side * cubeXPosition, initialYHeight + positionOffset, (i + 1) * cubeZSeperation);
 
             GameObject cube = Instantiate(swingCube, cubeSpawnPosition, Quaternion.identity);
+            cubes.Add(cube);
 
-            if (i == levelLength / 2)
+            if (i == numberOfCubes / 2)
             {
-                Instantiate(spawn, cubeSpawnPosition, Quaternion.Euler(0, 90, 0));
+                GameObject spawnTrigger = Instantiate(spawn, cubeSpawnPosition, Quaternion.Euler(0, 90, 0));
+                spawnTriggers.Enqueue(spawnTrigger);
             }
         }
     }
 
-    private static void DestroyCubes(GameObject[] cubes)
+    private void DestroyCubes(List<GameObject> cubes)
     {
         foreach (GameObject cube in cubes)
         {

@@ -11,6 +11,7 @@ public class CharacterControl
 
     #region Private variables
     private Vector3 movementDirection = Vector3.zero;
+    private bool isSwinging;
     #endregion
 
     public CharacterControl(CharacterView characterView)
@@ -24,17 +25,28 @@ public class CharacterControl
     public void Move(InputAction moveAction)
     {
         #region Character Movement
-        movementDirection += moveAction.ReadValue<Vector2>().x * view.GetCameraRight() * model.WalkSpeed;
-        movementDirection += moveAction.ReadValue<Vector2>().y * view.GetCameraForward() * model.WalkSpeed;
+        movementDirection += moveAction.ReadValue<Vector2>().x * view.GetCameraRight();
+        movementDirection += moveAction.ReadValue<Vector2>().y * view.GetCameraForward();
+
+        if (isSwinging)
+        {
+            movementDirection *= model.SwingSpeed;
+        }
+        else
+        {
+            movementDirection *= model.WalkSpeed;
+        }
 
         view.Rb.AddForce(movementDirection, ForceMode.Impulse);
         movementDirection = Vector3.zero;
 
+        float currentMaxSpeed = isSwinging ? model.MaxSwingSpeed : model.MaxSpeed;
+
         Vector3 velocity = view.Rb.velocity;
         velocity.y = 0;
-        if (velocity.sqrMagnitude > model.MaxSpeed * model.MaxSpeed)
+        if (velocity.sqrMagnitude > currentMaxSpeed * currentMaxSpeed)
         {
-            view.Rb.velocity = velocity.normalized * model.MaxSpeed + Vector3.up * view.Rb.velocity.y;
+            view.Rb.velocity = velocity.normalized * currentMaxSpeed + Vector3.up * view.Rb.velocity.y;
         }
         #endregion
 
@@ -67,7 +79,7 @@ public class CharacterControl
     {
         if (IsGrounded())
         {
-            movementDirection += Vector3.up * 10;
+            movementDirection += Vector3.up * model.JumpForce;
         }
     }
     #endregion
@@ -76,9 +88,17 @@ public class CharacterControl
     public RaycastHit CrosshairCheck()
     {
         Ray ray = Camera.main.ScreenPointToRay(view.Crosshair.transform.position);
+
+        RaycastHit hit = new RaycastHit();
         
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMasks.Swing))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, model.SwingLength, LayerMasks.Swing))
         {
+            hit = hitInfo;
+            view.Crosshair.color = Color.green;
+        }
+        else if (Physics.SphereCast(ray, 0.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing))
+        {
+            hit = sphereHitInfo;
             view.Crosshair.color = Color.green;
         }
         else
@@ -112,6 +132,7 @@ public class CharacterControl
         view.swingJoint.massScale = view.massScale;
 
         view.lineRenderer.positionCount = 2;
+        isSwinging = true;
     }
 
     public void EndSwing(InputAction.CallbackContext context)
@@ -122,6 +143,7 @@ public class CharacterControl
         }
         Object.Destroy(view.swingJoint);
         view.lineRenderer.positionCount = 0;
+        isSwinging = false;
     }
     #endregion
 }

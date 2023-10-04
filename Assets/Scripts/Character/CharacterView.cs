@@ -24,10 +24,10 @@ public class CharacterView : MonoBehaviour
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        // center the cursor to the crosshair
         Cursor.visible = false;
         Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
         Cursor.SetCursor(null, center, CursorMode.ForceSoftware);
+
         control = new CharacterControl(this);
         playerActions = new Schwing();
     }
@@ -39,6 +39,7 @@ public class CharacterView : MonoBehaviour
         playerActions.Player.Fire.canceled += control.EndSwing;
         moveAction = playerActions.Player.Move;
         playerActions.Player.Enable();
+        lineRenderer.positionCount = 0;
     }
 
     private void OnDisable()
@@ -58,6 +59,10 @@ public class CharacterView : MonoBehaviour
     {
         control.Look(moveAction);
         control.Move(moveAction);
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+        }
     }
 
     private void LateUpdate()
