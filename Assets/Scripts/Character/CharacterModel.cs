@@ -1,11 +1,17 @@
 public class CharacterModel
 {
+    #region Private Variables
+
     private float walkSpeed = 5f;
     private float maxSpeed = 10f;
     private float swingSpeed = 10f;
     private float maxSwingSpeed = 15f;
     private float swingLength = 25f;
     private float jumpForce = 7f;
+
+    #endregion
+
+    #region Public Properties
 
     public float WalkSpeed { get => walkSpeed; }
     public float MaxSpeed { get => maxSpeed; }
@@ -14,4 +20,5 @@ public class CharacterModel
     public float JumpForce { get => jumpForce; }
     public float MaxSwingSpeed { get => maxSwingSpeed; }
 
+    #endregion
 }

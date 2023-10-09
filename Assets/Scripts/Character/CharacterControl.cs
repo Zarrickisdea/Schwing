@@ -160,29 +160,4 @@ public class CharacterControl
     }
 
     #endregion
-
-    #region Collisions and Triggers
-
-    public void TriggerEnter(Collider other)
-    {
-        if (other.CompareTag(CustomTags.Spawn))
-        {
-            Debug.Log("Spawn");
-            LevelGenerator.Instance.MoveTrigger();
-            LevelGenerator.Instance.ChangeHalfLevel();
-        }
-    }
-
-    #endregion
-
-    #region Height
-    public void HeightCheck()
-    {
-        if (view.transform.position.y < -15)
-        {
-            view.transform.position = new Vector3(0, 2.5f, 2.8f);
-        }
-    }
-
-    #endregion
 }

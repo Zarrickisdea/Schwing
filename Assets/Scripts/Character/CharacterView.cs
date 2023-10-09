@@ -5,16 +5,32 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterView : MonoBehaviour
 {
+    #region Inspector Variables
+
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Image crosshair;
-    
+    [SerializeField] private LevelGenerator levelGenerator;
+
+    #endregion
+
+    #region Private Variables
+
     private Schwing playerActions;
     private InputAction moveAction;
+    private Subject levelSubject = new Subject();
+
+    #endregion
+
+    #region Properties
 
     public Rigidbody Rb { get => rb; }
     public Image Crosshair { get => crosshair; }
     public Camera PlayerCamera { get => playerCamera; }
+
+    #endregion
+
+    #region Public Variables
 
     public SpringJoint swingJoint;
     public LineRenderer lineRenderer;
@@ -23,7 +39,15 @@ public class CharacterView : MonoBehaviour
     public float damper;
     public float massScale;
 
+    #endregion
+
+    #region Character control
+
     private CharacterControl control;
+
+    #endregion
+
+    #region Unity Functions
 
     private void Awake()
     {
@@ -34,6 +58,11 @@ public class CharacterView : MonoBehaviour
 
         control = new CharacterControl(this);
         playerActions = new Schwing();
+
+        if (levelGenerator != null)
+        {
+            levelSubject.AddObserver(levelGenerator);
+        }
     }
 
     private void OnEnable()
@@ -57,7 +86,7 @@ public class CharacterView : MonoBehaviour
     private void Update()
     {
         control.CrosshairCheck();
-        control.HeightCheck();
+        HeightCheck();
     }
 
     private void FixedUpdate()
@@ -75,6 +104,18 @@ public class CharacterView : MonoBehaviour
         DrawSwingLine();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(CustomTags.Spawn))
+        {
+            levelSubject.Notify();
+        }
+    }
+
+    #endregion
+
+    #region Private Methods
+
     private void DrawSwingLine()
     {
         if (swingJoint == null)
@@ -86,10 +127,17 @@ public class CharacterView : MonoBehaviour
         lineRenderer.SetPosition(1, swingJoint.connectedAnchor);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void HeightCheck()
     {
-        control.TriggerEnter(other);
+        if (transform.position.y < -15)
+        {
+            transform.position = new Vector3(0, 2.5f, 2.8f);
+        }
     }
+
+    #endregion
+
+    #region Public Methods
 
     public void SetControl(CharacterControl control)
     {
@@ -109,4 +157,6 @@ public class CharacterView : MonoBehaviour
         right.y = 0;
         return right.normalized;
     }
+
+    #endregion
 }

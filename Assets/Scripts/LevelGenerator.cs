@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : MonoBehaviour, IObserver
 {
     #region Inspector Variables
 
@@ -28,27 +28,7 @@ public class LevelGenerator : MonoBehaviour
     private BoxCollider spawnPoint;
     #endregion
 
-    #region Public
-    #endregion
-
-    #region Singleton
-    private static LevelGenerator _instance;
-    public static LevelGenerator Instance { get { return _instance; } }
-    #endregion
-
     private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
-
-    private void Start()
     {
         CreateWalls();
         CreateLevelObjectPool();
@@ -89,9 +69,6 @@ public class LevelGenerator : MonoBehaviour
                 spawnPoint = spawnObject.GetComponent<BoxCollider>();
             }
         }
-        Debug.Log("Level Created");
-        Debug.Log(cubes.Count);
-        Debug.Log(activeCubes.Count);
     }
 
     private void SetCubePositions(GameObject cube, float xPosition, float yPosition, float zPosition)
@@ -211,5 +188,11 @@ public class LevelGenerator : MonoBehaviour
         spawnPoint.enabled = false;
         spawnPoint.gameObject.transform.position = new Vector3(0, 0, lastCubePlaced.transform.position.z);
         spawnPoint.enabled = true;
+    }
+
+    public void OnNotify()
+    {
+        MoveTrigger();
+        ChangeHalfLevel();
     }
 }
