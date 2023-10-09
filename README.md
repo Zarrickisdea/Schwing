@@ -1,7 +1,8 @@
 # Realm of Xados
 
 ## Description
-Welcome to Realm of Xados, an infinite runner game I'm currently working on
+Welcome to Realm of Xados, an infinite runner game I'm currently working on.
+
 This project was inspired by my love of escape scenarios in games like Ori, Uncharted etc.
 
 The game currently has a procedurally generated infinte level system and a movement style involving lots of swinging (guess where I got that from)
