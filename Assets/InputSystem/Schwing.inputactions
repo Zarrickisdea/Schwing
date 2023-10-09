@@ -42,27 +42,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Aim",
-                    "type": "Button",
-                    "id": "983f9682-2bd9-4cc1-a913-30b442dc8e0a",
-                    "expectedControlType": "Button",
+                    "name": "Swing",
+                    "type": "PassThrough",
+                    "id": "8fc650c5-88f6-453f-8a0b-ea16ce0fda57",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "978bfe49-cc26-4a3d-ab7b-7d7a29327403",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "WASD",
                     "id": "00ca640b-d935-4593-8157-c05846ea39b3",
@@ -98,34 +87,12 @@
                 },
                 {
                     "name": "",
-                    "id": "c1f7a91b-d0fd-4a62-997e-7fb9b69bf235",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "InvertVector2",
-                    "groups": ";Gamepad",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8c8e490b-c610-4785-884f-f04217b23ca4",
                     "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "InvertVector2",
                     "groups": "Keyboard&Mouse",
                     "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "143bb1cd-cc10-4eca-a2f0-a3664166fe91",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -152,37 +119,59 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "b1ca3187-0f62-4393-bd5d-054e5d75a38d",
-                    "path": "<Gamepad>/buttonSouth",
+                    "name": "WASD",
+                    "id": "6915c49c-5518-4a58-8dc7-42d0fc8d2d14",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Jump",
-                    "isComposite": false,
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "8ee0aaab-5741-4d86-9c09-9fc27fe9e7d3",
-                    "path": "<Mouse>/rightButton",
+                    "name": "up",
+                    "id": "f6074470-31d0-49af-bddf-af36fbf55bbb",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Aim",
+                    "action": "Swing",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "1dff10ad-a45b-484c-82d7-1106510cdf81",
-                    "path": "<Gamepad>/leftTrigger",
+                    "name": "down",
+                    "id": "6c0c159a-ae0b-4412-a2e7-ccd76dd6e327",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Aim",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Swing",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "04bc7829-98fc-4c0f-89de-d37bc2cf18e3",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "f491e15a-6dfc-45ea-bccc-a4679bd79aa7",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

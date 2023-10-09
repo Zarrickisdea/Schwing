@@ -1,18 +1,23 @@
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CharacterControl
 {
     #region Character MVC
+
     private CharacterModel model;
     private CharacterView view;
+
     #endregion
 
     #region Private variables
+
     private Vector3 movementDirection = Vector3.zero;
     private bool isSwinging;
+
     #endregion
+
+    #region Constructor
 
     public CharacterControl(CharacterView characterView)
     {
@@ -21,10 +26,12 @@ public class CharacterControl
         view.SetControl(this);
     }
 
+    #endregion
+
     #region Movement
+
     public void Move(InputAction moveAction)
     {
-        #region Character Movement
         movementDirection += moveAction.ReadValue<Vector2>().x * view.GetCameraRight();
         movementDirection += moveAction.ReadValue<Vector2>().y * view.GetCameraForward();
 
@@ -40,16 +47,15 @@ public class CharacterControl
         view.Rb.AddForce(movementDirection, ForceMode.Impulse);
         movementDirection = Vector3.zero;
 
-        float currentMaxSpeed = isSwinging ? model.MaxSwingSpeed : model.MaxSpeed;
-
         Vector3 velocity = view.Rb.velocity;
         velocity.y = 0;
+
+        float currentMaxSpeed = isSwinging ? model.MaxSwingSpeed : model.MaxSpeed;
+
         if (velocity.sqrMagnitude > currentMaxSpeed * currentMaxSpeed)
         {
             view.Rb.velocity = velocity.normalized * currentMaxSpeed + Vector3.up * view.Rb.velocity.y;
         }
-        #endregion
-
     }
 
     public void Look(InputAction moveAction)
@@ -66,9 +72,11 @@ public class CharacterControl
             view.Rb.angularVelocity = Vector3.zero;
         }
     }
+
     #endregion
 
     #region Jumping
+
     public bool IsGrounded()
     {
         Ray ray = new Ray(view.transform.position + Vector3.up * 0.25f, Vector3.down);
@@ -79,12 +87,14 @@ public class CharacterControl
     {
         if (IsGrounded())
         {
-            movementDirection += Vector3.up * model.JumpForce;
+            view.Rb.AddForce(Vector3.up * model.JumpForce, ForceMode.Impulse);
         }
     }
+
     #endregion
 
     #region Crosshair
+
     public RaycastHit CrosshairCheck()
     {
         Ray ray = Camera.main.ScreenPointToRay(view.Crosshair.transform.position);
@@ -96,7 +106,7 @@ public class CharacterControl
             hit = hitInfo;
             view.Crosshair.color = Color.green;
         }
-        else if (Physics.SphereCast(ray, 0.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing))
+        else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing))
         {
             hit = sphereHitInfo;
             view.Crosshair.color = Color.green;
@@ -107,9 +117,11 @@ public class CharacterControl
         }
         return hit;
     }
+
     #endregion
 
     #region Swinging
+
     public void StartSwing(InputAction.CallbackContext context)
     {
         RaycastHit hit = CrosshairCheck();
@@ -118,6 +130,8 @@ public class CharacterControl
         {
             return;
         }
+
+        isSwinging = true;
         view.swingJoint = view.gameObject.AddComponent<SpringJoint>();
         view.swingJoint.autoConfigureConnectedAnchor = false;
         view.swingJoint.connectedAnchor = hit.point;
@@ -132,7 +146,6 @@ public class CharacterControl
         view.swingJoint.massScale = view.massScale;
 
         view.lineRenderer.positionCount = 2;
-        isSwinging = true;
     }
 
     public void EndSwing(InputAction.CallbackContext context)
@@ -141,9 +154,35 @@ public class CharacterControl
         {
             return;
         }
+        isSwinging = false;
         Object.Destroy(view.swingJoint);
         view.lineRenderer.positionCount = 0;
-        isSwinging = false;
     }
+
+    #endregion
+
+    #region Collisions and Triggers
+
+    public void TriggerEnter(Collider other)
+    {
+        if (other.CompareTag(CustomTags.Spawn))
+        {
+            Debug.Log("Spawn");
+            LevelGenerator.Instance.MoveTrigger();
+            LevelGenerator.Instance.ChangeHalfLevel();
+        }
+    }
+
+    #endregion
+
+    #region Height
+    public void HeightCheck()
+    {
+        if (view.transform.position.y < -15)
+        {
+            view.transform.position = new Vector3(0, 2.5f, 2.8f);
+        }
+    }
+
     #endregion
 }

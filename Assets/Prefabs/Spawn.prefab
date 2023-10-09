@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1621497568151249146}
   m_Layer: 0
   m_Name: Spawn
-  m_TagString: Swing
+  m_TagString: Spawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,5 +51,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.25, y: 15, z: 25}
-  m_Center: {x: 0, y: 0, z: 3}
+  m_Size: {x: 0.25, y: 50, z: 50}
+  m_Center: {x: 1.471135e-14, y: 4.5098286, z: 6.964779}

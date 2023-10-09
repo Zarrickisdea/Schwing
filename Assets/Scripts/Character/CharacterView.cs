@@ -19,6 +19,10 @@ public class CharacterView : MonoBehaviour
     public SpringJoint swingJoint;
     public LineRenderer lineRenderer;
 
+    public float spring;
+    public float damper;
+    public float massScale;
+
     private CharacterControl control;
 
     private void Awake()
@@ -53,6 +57,7 @@ public class CharacterView : MonoBehaviour
     private void Update()
     {
         control.CrosshairCheck();
+        control.HeightCheck();
     }
 
     private void FixedUpdate()
@@ -77,8 +82,13 @@ public class CharacterView : MonoBehaviour
             return;
         }
 
-        lineRenderer.SetPosition(0, swingJoint.connectedAnchor);
-        lineRenderer.SetPosition(1, transform.position);
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, swingJoint.connectedAnchor);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        control.TriggerEnter(other);
     }
 
     public void SetControl(CharacterControl control)
@@ -99,10 +109,4 @@ public class CharacterView : MonoBehaviour
         right.y = 0;
         return right.normalized;
     }
-
-    #if UNITY_EDITOR
-    public float spring;
-    public float damper;
-    public float massScale;
-    #endif
 }
