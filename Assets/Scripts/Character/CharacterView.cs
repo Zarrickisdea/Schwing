@@ -19,15 +19,19 @@ public class CharacterView : MonoBehaviour
     public SpringJoint swingJoint;
     public LineRenderer lineRenderer;
 
+    public float spring;
+    public float damper;
+    public float massScale;
+
     private CharacterControl control;
 
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        // center the cursor to the crosshair
         Cursor.visible = false;
         Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
         Cursor.SetCursor(null, center, CursorMode.ForceSoftware);
+
         control = new CharacterControl(this);
         playerActions = new Schwing();
     }
@@ -39,6 +43,7 @@ public class CharacterView : MonoBehaviour
         playerActions.Player.Fire.canceled += control.EndSwing;
         moveAction = playerActions.Player.Move;
         playerActions.Player.Enable();
+        lineRenderer.positionCount = 0;
     }
 
     private void OnDisable()
@@ -52,12 +57,17 @@ public class CharacterView : MonoBehaviour
     private void Update()
     {
         control.CrosshairCheck();
+        control.HeightCheck();
     }
 
     private void FixedUpdate()
     {
         control.Look(moveAction);
         control.Move(moveAction);
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+        }
     }
 
     private void LateUpdate()
@@ -72,8 +82,13 @@ public class CharacterView : MonoBehaviour
             return;
         }
 
-        lineRenderer.SetPosition(0, swingJoint.connectedAnchor);
-        lineRenderer.SetPosition(1, transform.position);
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, swingJoint.connectedAnchor);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        control.TriggerEnter(other);
     }
 
     public void SetControl(CharacterControl control)
@@ -94,10 +109,4 @@ public class CharacterView : MonoBehaviour
         right.y = 0;
         return right.normalized;
     }
-
-    #if UNITY_EDITOR
-    public float spring;
-    public float damper;
-    public float massScale;
-    #endif
 }
