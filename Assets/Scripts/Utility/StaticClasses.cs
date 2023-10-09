@@ -19,3 +19,10 @@ public static class CustomTags
     public static readonly string Swing = "Swing";
     public static readonly string Spawn = "Spawn";
 }
+
+public static class SceneNames
+{
+    public static readonly string StartScene = "StartScene";
+    public static readonly string MainScene = "MainScene";
+    public static readonly string GameOverScene = "GameOverScene";
+}

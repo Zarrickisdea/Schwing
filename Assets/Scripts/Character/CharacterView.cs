@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -131,8 +132,15 @@ public class CharacterView : MonoBehaviour
     {
         if (transform.position.y < -15)
         {
-            transform.position = new Vector3(0, 2.5f, 2.8f);
+            SceneManager.LoadScene(SceneNames.GameOverScene);
+            ResetCursor();
         }
+    }
+
+    private void ResetCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     #endregion
