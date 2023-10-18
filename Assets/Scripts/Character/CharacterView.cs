@@ -111,6 +111,25 @@ public class CharacterView : MonoBehaviour
         {
             levelSubject.Notify();
         }
+        else if (other.CompareTag(CustomTags.Swing))
+        {
+            SwingCube swingCube = other.GetComponent<SwingCube>();
+
+            if (swingCube != null)
+            {
+                swingCube.ChangeState(swingCube.ViableState);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        SwingCube swingCube = other.GetComponent<SwingCube>();
+
+        if (swingCube != null)
+        {
+            swingCube.ChangeState(swingCube.StartState);
+        }
     }
 
     #endregion

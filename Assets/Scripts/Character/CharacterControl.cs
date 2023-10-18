@@ -101,12 +101,12 @@ public class CharacterControl
 
         RaycastHit hit = new RaycastHit();
         
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, model.SwingLength, LayerMasks.Swing))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
             hit = hitInfo;
             view.Crosshair.color = Color.green;
         }
-        else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing))
+        else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
             hit = sphereHitInfo;
             view.Crosshair.color = Color.green;

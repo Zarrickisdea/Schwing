@@ -210,6 +210,7 @@ MonoBehaviour:
   rb: {fileID: 7289204614103321299}
   playerCamera: {fileID: 0}
   crosshair: {fileID: 0}
+  levelGenerator: {fileID: 0}
   swingJoint: {fileID: 0}
   lineRenderer: {fileID: 3358624834677906883}
   spring: 4.5

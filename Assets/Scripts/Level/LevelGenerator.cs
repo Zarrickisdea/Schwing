@@ -18,6 +18,8 @@ public class LevelGenerator : MonoBehaviour, IObserver
     [SerializeField] private float initialYHeight;
     [SerializeField] private float cubeZSeperation;
     [SerializeField] private float perlinNoiseScale;
+    [SerializeField] private float cubeMovementTotalDuration;
+    [SerializeField] private float initialCubeMovementXOffset;
 
     #endregion
 
@@ -74,7 +76,7 @@ public class LevelGenerator : MonoBehaviour, IObserver
     private void SetCubePositions(GameObject cube, float xPosition, float yPosition, float zPosition)
     {
         Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
-        StartCoroutine(CubeMovement(cube, newPosition, 4f));
+        StartCoroutine(CubeMovement(cube, newPosition, cubeMovementTotalDuration));
     }
 
     private GameObject GetCube()
@@ -123,38 +125,54 @@ public class LevelGenerator : MonoBehaviour, IObserver
         Vector3 startPosition = cube.transform.position;
         float elapsedTime = 0f;
 
-        float xDuration = duration * 0.4f;
-        float zDuration = duration * 0.4f;
-        float yDuration = duration * 0.2f;
+        float initialXDuration = duration * 0.25f;
+        float zDuration = duration * 0.25f;
+        float yDuration = duration * 0.25f;
+        float finalXDuration = duration * 0.25f;
 
-        while (elapsedTime < xDuration)
+        float tempX = newPosition.x + (newPosition.x > 0 ? initialCubeMovementXOffset : -initialCubeMovementXOffset);
+        while (elapsedTime < initialXDuration)
         {
-            float t = elapsedTime / xDuration;
-            float newX = Mathf.Lerp(startPosition.x, newPosition.x, t);
+            float t = elapsedTime / initialXDuration;
+            float newX = Mathf.Lerp(startPosition.x, tempX, t);
             cube.transform.position = new Vector3(newX, startPosition.y, startPosition.z);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        while (elapsedTime < xDuration + zDuration)
+        while (elapsedTime < initialXDuration + zDuration)
         {
-            float t = (elapsedTime - xDuration) / zDuration;
+            float t = (elapsedTime - initialXDuration) / zDuration;
             float newZ = Mathf.Lerp(startPosition.z, newPosition.z, t);
             cube.transform.position = new Vector3(cube.transform.position.x, startPosition.y, newZ);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        while (elapsedTime < xDuration + zDuration + yDuration)
+        while (elapsedTime < initialXDuration + zDuration + yDuration)
         {
-            float t = (elapsedTime - xDuration - zDuration) / yDuration;
+            float t = (elapsedTime - initialXDuration - zDuration) / yDuration;
             float newY = Mathf.Lerp(startPosition.y, newPosition.y, t);
             cube.transform.position = new Vector3(cube.transform.position.x, newY, cube.transform.position.z);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
+        while (elapsedTime < initialXDuration + zDuration + yDuration + finalXDuration)
+        {
+            float t = (elapsedTime - initialXDuration - zDuration - yDuration) / finalXDuration;
+            float newX = Mathf.Lerp(tempX, newPosition.x, t);
+            cube.transform.position = new Vector3(newX, newPosition.y, newPosition.z);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
         cube.transform.position = newPosition;
+        SwingCube swingCube = cube.GetComponent<SwingCube>();
+        if (swingCube != null)
+        {
+            swingCube.ChangeState(swingCube.StartState);
+        }
     }
 
     public void ChangeHalfLevel()
