@@ -60,6 +60,14 @@ public class SwingCube : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (cubeStateMachine.currentState != null)
+        {
+            cubeStateMachine.currentState.ResolveTriggers(other);
+        }
+    }
+
     public void ChangeState(SwingCubeState state)
     {
         cubeStateMachine.ChangeState(state);

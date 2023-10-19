@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class BaseState
 {
     protected float stateTimer;
@@ -21,7 +23,7 @@ public abstract class BaseState
     {
     }
 
-    public virtual void NotifyState()
+    public virtual void ResolveTriggers(Collider other)
     {
     }
 }

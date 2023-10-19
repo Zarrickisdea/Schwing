@@ -8,7 +8,7 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
     [Header("Level Generation")]
     [SerializeField] private GameObject walls;
-    [SerializeField] private GameObject swingCube;
+    [SerializeField] private SwingCube swingCube;
     [SerializeField] private GameObject startPlane;
     [SerializeField] private GameObject spawn;
 
@@ -24,8 +24,8 @@ public class LevelGenerator : MonoBehaviour, IObserver
     #endregion
 
     #region Private
-    private Queue<GameObject> cubes = new Queue<GameObject>();
-    private Queue<GameObject> activeCubes = new Queue<GameObject>();
+    private Queue<SwingCube> cubes = new Queue<SwingCube>();
+    private Queue<SwingCube> activeCubes = new Queue<SwingCube>();
     private GameObject lastCubePlaced;
     private BoxCollider spawnPoint;
     #endregion
@@ -41,8 +41,8 @@ public class LevelGenerator : MonoBehaviour, IObserver
     {
         for (int i = 0; i < numberOfCubes; i++)
         {
-            GameObject cube = Instantiate(swingCube, new Vector3(0, 0, 0), Quaternion.identity);
-            cube.SetActive(false);
+            SwingCube cube = Instantiate(swingCube, new Vector3(0, 0, 0), Quaternion.identity);
+            cube.gameObject.SetActive(false);
             cubes.Enqueue(cube);
         }
     }
@@ -59,10 +59,10 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
             float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
 
-            GameObject cube = GetCube();
-            cube.SetActive(true);
+            SwingCube cube = GetCube();
+            cube.gameObject.SetActive(true);
             SetCubePositions(cube, xPosition, yPosition, zPosition);
-            lastCubePlaced = cube;
+            lastCubePlaced = cube.gameObject;
             activeCubes.Enqueue(cube);
 
             if (i == numberOfCubes / 2)
@@ -73,106 +73,37 @@ public class LevelGenerator : MonoBehaviour, IObserver
         }
     }
 
-    private void SetCubePositions(GameObject cube, float xPosition, float yPosition, float zPosition)
+    private void SetCubePositions(SwingCube cube, float xPosition, float yPosition, float zPosition)
     {
         Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
-        StartCoroutine(CubeMovement(cube, newPosition, cubeMovementTotalDuration));
+        cube.ChangeState(new SwingCubeChangeState(cube, cubeMovementTotalDuration, newPosition));
     }
 
-    private GameObject GetCube()
+    private SwingCube GetCube()
     {
         if (cubes.Count > 0)
         {
-            GameObject cube = cubes.Dequeue();
+            SwingCube cube = cubes.Dequeue();
             return cube;
         }
         return null;
     }
 
-    private GameObject GetActiveCube()
+    private SwingCube GetActiveCube()
     {
         if (activeCubes.Count > 0)
         {
-            GameObject cube = activeCubes.Dequeue();
+            SwingCube cube = activeCubes.Dequeue();
             return cube;
         }
         return null;
-    }
-
-    private void ReturnObjectToPool (GameObject cube)
-    {
-        cubes.Enqueue(cube);
-        cube.SetActive(false);
-    }
-
-    private void DestroyCubes(List<GameObject> cubes)
-    {
-        foreach (GameObject cube in cubes)
-        {
-            Destroy(cube);
-        }
     }
 
     private void CreateWalls()
     {
-        GameObject leftWall = Instantiate(walls, new Vector3(-10, 0, 0), Quaternion.identity);
-        GameObject rightWall = Instantiate(walls, new Vector3(10, 0, 0), Quaternion.identity);
+        //GameObject leftWall = Instantiate(walls, new Vector3(-10, 0, 0), Quaternion.identity);
+        //GameObject rightWall = Instantiate(walls, new Vector3(10, 0, 0), Quaternion.identity);
         GameObject start = Instantiate(startPlane, new Vector3(0, -2f, 0), Quaternion.identity);
-    }
-
-    private IEnumerator CubeMovement(GameObject cube, Vector3 newPosition, float duration)
-    {
-        Vector3 startPosition = cube.transform.position;
-        float elapsedTime = 0f;
-
-        float initialXDuration = duration * 0.25f;
-        float zDuration = duration * 0.25f;
-        float yDuration = duration * 0.25f;
-        float finalXDuration = duration * 0.25f;
-
-        float tempX = newPosition.x + (newPosition.x > 0 ? initialCubeMovementXOffset : -initialCubeMovementXOffset);
-        while (elapsedTime < initialXDuration)
-        {
-            float t = elapsedTime / initialXDuration;
-            float newX = Mathf.Lerp(startPosition.x, tempX, t);
-            cube.transform.position = new Vector3(newX, startPosition.y, startPosition.z);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        while (elapsedTime < initialXDuration + zDuration)
-        {
-            float t = (elapsedTime - initialXDuration) / zDuration;
-            float newZ = Mathf.Lerp(startPosition.z, newPosition.z, t);
-            cube.transform.position = new Vector3(cube.transform.position.x, startPosition.y, newZ);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        while (elapsedTime < initialXDuration + zDuration + yDuration)
-        {
-            float t = (elapsedTime - initialXDuration - zDuration) / yDuration;
-            float newY = Mathf.Lerp(startPosition.y, newPosition.y, t);
-            cube.transform.position = new Vector3(cube.transform.position.x, newY, cube.transform.position.z);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        while (elapsedTime < initialXDuration + zDuration + yDuration + finalXDuration)
-        {
-            float t = (elapsedTime - initialXDuration - zDuration - yDuration) / finalXDuration;
-            float newX = Mathf.Lerp(tempX, newPosition.x, t);
-            cube.transform.position = new Vector3(newX, newPosition.y, newPosition.z);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        cube.transform.position = newPosition;
-        SwingCube swingCube = cube.GetComponent<SwingCube>();
-        if (swingCube != null)
-        {
-            swingCube.ChangeState(swingCube.StartState);
-        }
     }
 
     public void ChangeHalfLevel()
@@ -193,9 +124,9 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
             Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
 
-            GameObject cube = GetActiveCube();
+            SwingCube cube = GetActiveCube();
             currentEndPoint = newPosition;
-            lastCubePlaced = cube;
+            lastCubePlaced = cube.gameObject;
             activeCubes.Enqueue(cube);
             SetCubePositions(cube, xPosition, yPosition, zPosition);
         }

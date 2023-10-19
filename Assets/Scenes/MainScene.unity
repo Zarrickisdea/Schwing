@@ -630,7 +630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walls: {fileID: 1633593964275921114, guid: 12d964073e8204b40a06b9d4ca19bffb, type: 3}
-  swingCube: {fileID: 25236825908225013, guid: 119252f5048ef3d448814f8e91317c4b, type: 3}
+  swingCube: {fileID: 2190983049794510471, guid: 119252f5048ef3d448814f8e91317c4b,
+    type: 3}
   startPlane: {fileID: 533798626147561785, guid: a92f4d42c489514439ca31a6d2b9dcd1,
     type: 3}
   spawn: {fileID: 3046684937646029426, guid: 83da97669d7010d4eb52e52661a8034b, type: 3}
