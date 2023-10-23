@@ -11,6 +11,7 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Image crosshair;
+    [SerializeField] private Transform aimPoint;
     [SerializeField] private LevelGenerator levelGenerator;
 
     #endregion
@@ -26,7 +27,7 @@ public class CharacterView : MonoBehaviour
     #region Properties
 
     public Rigidbody Rb { get => rb; }
-    public Image Crosshair { get => crosshair; }
+    public Transform AimPoint { get => aimPoint; }
     public Camera PlayerCamera { get => playerCamera; }
 
     #endregion

@@ -11,8 +11,11 @@ public class SwingCubeViableState : SwingCubeState
         swingCube.CubeColor.color = Color.blue;
     }
 
-    public override void NotifyState(SwingCubeState state)
+    public override void ResolveTriggerExit(Collider other)
     {
-
+        if (other.CompareTag(CustomTags.Player))
+        {
+            swingCube.ChangeState(swingCube.StartState);
+        }
     }
 }

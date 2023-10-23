@@ -23,7 +23,11 @@ public abstract class BaseState
     {
     }
 
-    public virtual void ResolveTriggers(Collider other)
+    public virtual void ResolveTriggerEntry(Collider other)
+    {
+    }
+
+    public virtual void ResolveTriggerExit(Collider other)
     {
     }
 }

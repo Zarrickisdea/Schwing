@@ -64,7 +64,15 @@ public class SwingCube : MonoBehaviour
     {
         if (cubeStateMachine.currentState != null)
         {
-            cubeStateMachine.currentState.ResolveTriggers(other);
+            cubeStateMachine.currentState.ResolveTriggerEntry(other);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (cubeStateMachine.currentState != null)
+        {
+            cubeStateMachine.currentState.ResolveTriggerExit(other);
         }
     }
 

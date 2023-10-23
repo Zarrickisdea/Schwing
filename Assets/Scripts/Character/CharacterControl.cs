@@ -97,24 +97,30 @@ public class CharacterControl
 
     public RaycastHit CrosshairCheck()
     {
-        Ray ray = Camera.main.ScreenPointToRay(view.Crosshair.transform.position);
+        Ray ray = new Ray(view.transform.position, view.PlayerCamera.transform.forward);
 
         RaycastHit hit = new RaycastHit();
         
         if (Physics.Raycast(ray, out RaycastHit hitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
             hit = hitInfo;
-            view.Crosshair.color = Color.green;
+            view.AimPoint.gameObject.SetActive(true);
+            view.AimPoint.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            view.AimPoint.transform.position = hit.point;
         }
         else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
             hit = sphereHitInfo;
-            view.Crosshair.color = Color.green;
+            view.AimPoint.gameObject.SetActive(true);
+            view.AimPoint.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            view.AimPoint.transform.position = hit.point;
         }
         else
         {
-            view.Crosshair.color = Color.red;
+            view.AimPoint.gameObject.SetActive(false);
         }
+
+        Debug.DrawRay(ray.origin, ray.direction * model.SwingLength, Color.red);
         return hit;
     }
 
