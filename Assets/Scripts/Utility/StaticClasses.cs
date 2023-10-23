@@ -18,6 +18,7 @@ public static class CustomTags
 {
     public static readonly string Swing = "Swing";
     public static readonly string Spawn = "Spawn";
+    public static readonly string Player = "Player";
 }
 
 public static class SceneNames

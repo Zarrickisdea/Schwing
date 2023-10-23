@@ -210,6 +210,8 @@ MonoBehaviour:
   rb: {fileID: 7289204614103321299}
   playerCamera: {fileID: 0}
   crosshair: {fileID: 0}
+  aimPoint: {fileID: 8728081233067750556}
+  levelGenerator: {fileID: 0}
   swingJoint: {fileID: 0}
   lineRenderer: {fileID: 3358624834677906883}
   spring: 4.5
@@ -403,7 +405,7 @@ Transform:
   m_GameObject: {fileID: 8604326830080997687}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.458, y: 0.577, z: 0}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
