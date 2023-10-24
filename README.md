@@ -9,7 +9,12 @@ The game currently has a procedurally generated infinte level system and a movem
 
 ## Video
 
-https://github.com/Zarrickisdea/Schwing/assets/77843021/d9bb521a-8324-4d4a-98d0-3db3086e695a
+
+https://github.com/Zarrickisdea/Schwing/assets/77843021/e759ff95-48aa-4b91-be25-52b2bf3ebf9c
+
+Game version as of 23/10/2023
+
+
 
 ## Currently in development
 - Proper scoring system based on distance travelled
