@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SwingCube : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class SwingCube : MonoBehaviour
 
     public SwingCubeStartState StartState;
     public SwingCubeViableState ViableState;
-    public SwingCubeAimState AimState;
+    public SwingCubeChangeState ChangingState;
 
     public Material CubeColor
     {
@@ -20,20 +19,13 @@ public class SwingCube : MonoBehaviour
         }
     }
 
-    public BaseState CurrentState
-    {
-        get
-        {
-            return cubeStateMachine.currentState;
-        }
-    }
-
     private void Awake()
     {
         cubeStateMachine = new StateMachine();
         StartState = new SwingCubeStartState(this);
         ViableState = new SwingCubeViableState(this);
-        AimState = new SwingCubeAimState(this);
+        ChangingState = new SwingCubeChangeState(this);
+
     }
 
     private void Update()
@@ -73,6 +65,14 @@ public class SwingCube : MonoBehaviour
         if (cubeStateMachine.currentState != null)
         {
             cubeStateMachine.currentState.ResolveTriggerExit(other);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (cubeStateMachine.currentState != null)
+        {
+            cubeStateMachine.currentState.ResolveTriggerStay(other);
         }
     }
 

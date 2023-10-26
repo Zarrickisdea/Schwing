@@ -51,19 +51,8 @@ public class LevelGenerator : MonoBehaviour, IObserver
     {
         for (int i = 0; i < numberOfCubes; i++)
         {
-            float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
-            float zPosition = (i + 1) * cubeZSeperation;
-
-            float randomX = Random.value;
-            float randomY = Random.value;
-
-            float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
-
-            SwingCube cube = GetCube();
-            cube.gameObject.SetActive(true);
-            SetCubePositions(cube, xPosition, yPosition, zPosition);
-            lastCubePlaced = cube.gameObject;
-            activeCubes.Enqueue(cube);
+            float zPosition, yPosition;
+            CalculateCubePositions(i, out zPosition, out yPosition);
 
             if (i == numberOfCubes / 2)
             {
@@ -73,10 +62,26 @@ public class LevelGenerator : MonoBehaviour, IObserver
         }
     }
 
+    private void CalculateCubePositions(int i, out float zPosition, out float yPosition)
+    {
+        float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
+        zPosition = (i + 1) * cubeZSeperation;
+        float randomX = Random.value;
+        float randomY = Random.value;
+
+        yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
+        SwingCube cube = GetCube();
+        cube.gameObject.SetActive(true);
+        lastCubePlaced = cube.gameObject;
+        activeCubes.Enqueue(cube);
+        SetCubePositions(cube, xPosition, yPosition, zPosition);
+    }
+
     private void SetCubePositions(SwingCube cube, float xPosition, float yPosition, float zPosition)
     {
         Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
-        cube.ChangeState(new SwingCubeChangeState(cube, cubeMovementTotalDuration, newPosition));
+        cube.ChangeState(cube.ChangingState);
+        cube.ChangingState.SetChangeParameters(cubeMovementTotalDuration, newPosition, initialCubeMovementXOffset);
     }
 
     private SwingCube GetCube()
@@ -101,8 +106,8 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
     private void CreateWalls()
     {
-        //GameObject leftWall = Instantiate(walls, new Vector3(-10, 0, 0), Quaternion.identity);
-        //GameObject rightWall = Instantiate(walls, new Vector3(10, 0, 0), Quaternion.identity);
+        GameObject leftWall = Instantiate(walls, new Vector3(-initialCubeMovementXOffset, 0, 0), Quaternion.identity);
+        GameObject rightWall = Instantiate(walls, new Vector3(initialCubeMovementXOffset, 0, 0), Quaternion.identity);
         GameObject start = Instantiate(startPlane, new Vector3(0, -2f, 0), Quaternion.identity);
     }
 
@@ -114,22 +119,28 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
         for (int i = 0; i < count; i++)
         {
-            float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
-            float zPosition = (currentEndPoint.z + cubeZSeperation);
-            
-            float randomX = Random.value;
-            float randomY = Random.value;
-
-            float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
-
-            Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
-
-            SwingCube cube = GetActiveCube();
-            currentEndPoint = newPosition;
-            lastCubePlaced = cube.gameObject;
-            activeCubes.Enqueue(cube);
-            SetCubePositions(cube, xPosition, yPosition, zPosition);
+            currentEndPoint = HalfLevelCubePosition(currentEndPoint, i);
         }
+    }
+
+    private Vector3 HalfLevelCubePosition(Vector3 currentEndPoint, int i)
+    {
+        float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
+        float zPosition = (currentEndPoint.z + cubeZSeperation);
+
+        float randomX = Random.value;
+        float randomY = Random.value;
+
+        float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
+
+        Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
+
+        SwingCube cube = GetActiveCube();
+        currentEndPoint = newPosition;
+        lastCubePlaced = cube.gameObject;
+        activeCubes.Enqueue(cube);
+        SetCubePositions(cube, xPosition, yPosition, zPosition);
+        return currentEndPoint;
     }
 
     public void MoveTrigger()

@@ -30,5 +30,9 @@ public abstract class BaseState
     public virtual void ResolveTriggerExit(Collider other)
     {
     }
+
+    public virtual void ResolveTriggerStay(Collider other)
+    {
+    }
 }
 

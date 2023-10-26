@@ -105,14 +105,14 @@ public class CharacterControl
         {
             hit = hitInfo;
             view.AimPoint.gameObject.SetActive(true);
-            view.AimPoint.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            view.AimObjectMeshRenderer.material.color = Color.green;
             view.AimPoint.transform.position = hit.point;
         }
         else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
             hit = sphereHitInfo;
             view.AimPoint.gameObject.SetActive(true);
-            view.AimPoint.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            view.AimObjectMeshRenderer.material.color = Color.green;
             view.AimPoint.transform.position = hit.point;
         }
         else

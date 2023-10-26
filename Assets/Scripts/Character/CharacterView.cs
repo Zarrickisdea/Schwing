@@ -10,7 +10,6 @@ public class CharacterView : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Image crosshair;
     [SerializeField] private Transform aimPoint;
     [SerializeField] private LevelGenerator levelGenerator;
 
@@ -20,6 +19,7 @@ public class CharacterView : MonoBehaviour
 
     private Schwing playerActions;
     private InputAction moveAction;
+    private MeshRenderer aimObjectMeshRenderer;
     private Subject levelSubject = new Subject();
 
     #endregion
@@ -29,6 +29,7 @@ public class CharacterView : MonoBehaviour
     public Rigidbody Rb { get => rb; }
     public Transform AimPoint { get => aimPoint; }
     public Camera PlayerCamera { get => playerCamera; }
+    public MeshRenderer AimObjectMeshRenderer { get => aimObjectMeshRenderer; }
 
     #endregion
 
@@ -64,6 +65,11 @@ public class CharacterView : MonoBehaviour
         if (levelGenerator != null)
         {
             levelSubject.AddObserver(levelGenerator);
+        }
+
+        if (aimPoint != null)
+        {
+            aimObjectMeshRenderer = aimPoint.gameObject.GetComponent<MeshRenderer>();
         }
     }
 
@@ -131,7 +137,7 @@ public class CharacterView : MonoBehaviour
 
     private void HeightCheck()
     {
-        if (transform.position.y < -15)
+        if (transform.position.y < -30f)
         {
             SceneManager.LoadScene(SceneNames.GameOverScene);
             ResetCursor();

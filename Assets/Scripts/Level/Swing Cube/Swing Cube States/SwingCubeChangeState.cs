@@ -10,7 +10,11 @@ public class SwingCubeChangeState : SwingCubeState
     private float finalXDuration;
     private float tempX;
 
-    public SwingCubeChangeState(SwingCube swingCube, float duration, Vector3 newPosition) : base(swingCube)
+    public SwingCubeChangeState(SwingCube swingCube) : base(swingCube)
+    {
+    }
+
+    public void SetChangeParameters(float duration, Vector3 newPosition, float xSeperation)
     {
         stateTimer = duration;
         this.newPosition = newPosition;
@@ -19,14 +23,15 @@ public class SwingCubeChangeState : SwingCubeState
         zDuration = duration * 0.25f;
         yDuration = duration * 0.25f;
         finalXDuration = duration * 0.25f;
-        tempX = newPosition.x + (newPosition.x > 0 ? 25 : -25);
+        tempX = newPosition.x + (newPosition.x > 0 ? xSeperation : -xSeperation);
 
         oldPosition = swingCube.transform.position;
     }
 
     public override void Enter()
     {
-        swingCube.CubeColor.color = Color.white;
+        swingCube.CubeColor.SetColor("_EmColor", Color.white);
+        swingCube.CubeColor.SetFloat("_EffectPower", -1f);
     }
 
     public override void UpdateLogic()
