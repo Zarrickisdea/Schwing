@@ -8,7 +8,7 @@ public class SwingCubeStartState : SwingCubeState
     public override void Enter()
     {
         swingCube.CubeColor.SetColor("_EmColor", Color.red);  
-        swingCube.CubeColor.SetFloat("_EffectPower", 0);
+        swingCube.CubeColor.SetFloat("_EffectPower", 2f);
     }
 
     public override void ResolveTriggerEntry(Collider other)

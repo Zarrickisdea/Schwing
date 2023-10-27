@@ -3,7 +3,6 @@ using UnityEngine;
 public class SwingCube : MonoBehaviour
 {
     [SerializeField] private MeshRenderer cubeMeshRenderer;
-    [SerializeField] private SphereCollider cubeSphereCollider;
 
     private StateMachine cubeStateMachine;
 

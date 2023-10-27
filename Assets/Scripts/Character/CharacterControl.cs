@@ -14,6 +14,7 @@ public class CharacterControl
 
     private Vector3 movementDirection = Vector3.zero;
     private bool isSwinging;
+    private bool canSwing;
 
     #endregion
 
@@ -103,17 +104,23 @@ public class CharacterControl
         
         if (Physics.Raycast(ray, out RaycastHit hitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
-            hit = hitInfo;
-            view.AimPoint.gameObject.SetActive(true);
-            view.AimObjectMeshRenderer.material.color = Color.green;
-            view.AimPoint.transform.position = hit.point;
+            if (hitInfo.point.y - ray.origin.y > 0.5f)
+            {
+                hit = hitInfo;
+                view.AimPoint.gameObject.SetActive(true);
+                view.AimObjectMeshRenderer.material.color = Color.green;
+                view.AimPoint.transform.position = hit.point;
+            }
         }
         else if (Physics.SphereCast(ray, 1.5f, out RaycastHit sphereHitInfo, model.SwingLength, LayerMasks.Swing, QueryTriggerInteraction.Ignore))
         {
-            hit = sphereHitInfo;
-            view.AimPoint.gameObject.SetActive(true);
-            view.AimObjectMeshRenderer.material.color = Color.green;
-            view.AimPoint.transform.position = hit.point;
+            if (sphereHitInfo.point.y - ray.origin.y > 0.5f)
+            {
+                hit = sphereHitInfo;
+                view.AimPoint.gameObject.SetActive(true);
+                view.AimObjectMeshRenderer.material.color = Color.green;
+                view.AimPoint.transform.position = hit.point;
+            }
         }
         else
         {

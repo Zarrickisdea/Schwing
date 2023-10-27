@@ -31,7 +31,7 @@ public class SwingCubeChangeState : SwingCubeState
     public override void Enter()
     {
         swingCube.CubeColor.SetColor("_EmColor", Color.white);
-        swingCube.CubeColor.SetFloat("_EffectPower", -1f);
+        swingCube.CubeColor.SetFloat("_EffectPower", 4f);
     }
 
     public override void UpdateLogic()

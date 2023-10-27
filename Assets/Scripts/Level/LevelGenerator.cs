@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class LevelGenerator : MonoBehaviour, IObserver
 {
@@ -28,6 +29,9 @@ public class LevelGenerator : MonoBehaviour, IObserver
     private Queue<SwingCube> activeCubes = new Queue<SwingCube>();
     private GameObject lastCubePlaced;
     private BoxCollider spawnPoint;
+    private GameObject leftWall;
+    private GameObject rightWall;
+    private GameObject start;
     #endregion
 
     private void Awake()
@@ -69,7 +73,7 @@ public class LevelGenerator : MonoBehaviour, IObserver
         float randomX = Random.value;
         float randomY = Random.value;
 
-        yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
+        yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * perlinNoiseScale);
         SwingCube cube = GetCube();
         cube.gameObject.SetActive(true);
         lastCubePlaced = cube.gameObject;
@@ -106,9 +110,29 @@ public class LevelGenerator : MonoBehaviour, IObserver
 
     private void CreateWalls()
     {
-        GameObject leftWall = Instantiate(walls, new Vector3(-initialCubeMovementXOffset, 0, 0), Quaternion.identity);
-        GameObject rightWall = Instantiate(walls, new Vector3(initialCubeMovementXOffset, 0, 0), Quaternion.identity);
-        GameObject start = Instantiate(startPlane, new Vector3(0, -2f, 0), Quaternion.identity);
+        leftWall = Instantiate(walls, new Vector3(-initialCubeMovementXOffset, 0, 0), Quaternion.identity);
+        rightWall = Instantiate(walls, new Vector3(initialCubeMovementXOffset, 0, 0), Quaternion.identity);
+        start = Instantiate(startPlane, new Vector3(0, -1f, 0), Quaternion.identity);
+    }
+
+    private Vector3 HalfLevelCubePosition(Vector3 currentEndPoint, int i)
+    {
+        float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
+        float zPosition = (currentEndPoint.z + cubeZSeperation);
+
+        float randomX = Random.value;
+        float randomY = Random.value;
+
+        float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * perlinNoiseScale);
+
+        Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
+
+        SwingCube cube = GetActiveCube();
+        currentEndPoint = newPosition;
+        lastCubePlaced = cube.gameObject;
+        activeCubes.Enqueue(cube);
+        SetCubePositions(cube, xPosition, yPosition, zPosition);
+        return currentEndPoint;
     }
 
     public void ChangeHalfLevel()
@@ -121,26 +145,6 @@ public class LevelGenerator : MonoBehaviour, IObserver
         {
             currentEndPoint = HalfLevelCubePosition(currentEndPoint, i);
         }
-    }
-
-    private Vector3 HalfLevelCubePosition(Vector3 currentEndPoint, int i)
-    {
-        float xPosition = Random.value < 0.5 ? cubeXPosition : -cubeXPosition;
-        float zPosition = (currentEndPoint.z + cubeZSeperation);
-
-        float randomX = Random.value;
-        float randomY = Random.value;
-
-        float yPosition = initialYHeight + (Mathf.PerlinNoise(randomX * (i + 1), randomY * (i + 1)) * 10);
-
-        Vector3 newPosition = new Vector3(xPosition, yPosition, zPosition);
-
-        SwingCube cube = GetActiveCube();
-        currentEndPoint = newPosition;
-        lastCubePlaced = cube.gameObject;
-        activeCubes.Enqueue(cube);
-        SetCubePositions(cube, xPosition, yPosition, zPosition);
-        return currentEndPoint;
     }
 
     public void MoveTrigger()

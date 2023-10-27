@@ -12,14 +12,14 @@ public class SwingCubeViableState : SwingCubeState
     {
         swingCube.CubeColor.SetColor("_EmColor", Color.blue);
         swingCube.CubeColor.SetFloat("_EffectPower", glowEffect);
-        glowEffect = -1f;
+        glowEffect = 0f;
         time = 0f;
     }
 
     public override void UpdateLogic()
     {
         time += Time.deltaTime;
-        glowEffect = Mathf.Lerp(-1f, 1f, time);
+        glowEffect = Mathf.Lerp(0f, 3f, time);
 
         swingCube.CubeColor.SetFloat("_EffectPower", glowEffect);
     }
