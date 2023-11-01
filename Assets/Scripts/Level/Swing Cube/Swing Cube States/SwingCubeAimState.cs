@@ -10,9 +10,4 @@ public class SwingCubeAimState : SwingCubeState
     {
         swingCube.CubeColor.color = Color.green;
     }
-
-    public override void NotifyState(SwingCubeState state)
-    {
-
-    }
 }
