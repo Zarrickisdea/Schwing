@@ -5,10 +5,12 @@ public class SwingCube : MonoBehaviour
     [SerializeField] private MeshRenderer cubeMeshRenderer;
 
     private StateMachine cubeStateMachine;
+    private Rigidbody rb;
 
     public SwingCubeStartState StartState;
     public SwingCubeViableState ViableState;
     public SwingCubeChangeState ChangingState;
+    public SwingCubeAimState AimState;
 
     public Material CubeColor
     {
@@ -18,12 +20,23 @@ public class SwingCube : MonoBehaviour
         }
     }
 
+    public Rigidbody Rb
+    {
+        get
+        {
+            return rb;
+        }
+    }
+
     private void Awake()
     {
         cubeStateMachine = new StateMachine();
         StartState = new SwingCubeStartState(this);
         ViableState = new SwingCubeViableState(this);
         ChangingState = new SwingCubeChangeState(this);
+        AimState = new SwingCubeAimState(this);
+
+        rb = GetComponent<Rigidbody>();
 
     }
 

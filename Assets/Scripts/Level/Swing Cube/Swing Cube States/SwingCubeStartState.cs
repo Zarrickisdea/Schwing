@@ -21,7 +21,7 @@ public class SwingCubeStartState : SwingCubeState
 
     public override void ResolveTriggerStay(Collider other)
     {
-        if (other.CompareTag(CustomTags.Player))
+        if (other.CompareTag(CustomTags.Player) && other.GetComponent<CharacterView>().swingJoint == null)
         {
             swingCube.ChangeState(swingCube.ViableState);
         }

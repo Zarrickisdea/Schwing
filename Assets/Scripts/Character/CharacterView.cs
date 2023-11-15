@@ -37,6 +37,7 @@ public class CharacterView : MonoBehaviour
 
     public SpringJoint swingJoint;
     public LineRenderer lineRenderer;
+    public DistanceJoint2D distanceJoint;
 
     public float spring;
     public float damper;
@@ -71,6 +72,7 @@ public class CharacterView : MonoBehaviour
         {
             aimObjectMeshRenderer = aimPoint.gameObject.GetComponent<MeshRenderer>();
         }
+
     }
 
     private void OnEnable()
@@ -128,11 +130,16 @@ public class CharacterView : MonoBehaviour
     {
         if (swingJoint == null)
         {
+            lineRenderer.positionCount = 0;
             return;
         }
 
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, swingJoint.connectedAnchor);
+        lineRenderer.positionCount = 4;
+
+        for (int i = 0; i < lineRenderer.positionCount; i++)
+        {
+            lineRenderer.SetPosition(i, Vector3.Lerp(transform.position, swingJoint.connectedBody.transform.position, i / (float)(lineRenderer.positionCount - 1f)));
+        }
     }
 
     private void HeightCheck()

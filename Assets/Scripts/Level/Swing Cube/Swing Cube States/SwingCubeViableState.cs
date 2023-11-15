@@ -4,8 +4,10 @@ public class SwingCubeViableState : SwingCubeState
 {
     private float glowEffect;
     private float time;
+    private bool chanceOfMadness;
     public SwingCubeViableState(SwingCube swingCube) : base(swingCube)
     {
+        chanceOfMadness = false;
     }
 
     public override void Enter()
@@ -14,6 +16,7 @@ public class SwingCubeViableState : SwingCubeState
         swingCube.CubeColor.SetFloat("_EffectPower", glowEffect);
         glowEffect = 0f;
         time = 0f;
+        chanceOfMadness = Random.Range(0, 100) < 75;
     }
 
     public override void UpdateLogic()
@@ -30,5 +33,19 @@ public class SwingCubeViableState : SwingCubeState
         {
             swingCube.ChangeState(swingCube.StartState);
         }
+    }
+
+    public override void ResolveTriggerStay(Collider other)
+    {
+        //if (other.CompareTag(CustomTags.Player))
+        //{
+        //    CharacterView characterView = other.GetComponent<CharacterView>();
+
+        //    if (characterView.swingJoint != null && characterView.swingJoint.connectedBody == swingCube.Rb && chanceOfMadness)
+        //    {
+        //        Debug.Log("Madness");
+        //        swingCube.ChangeState(swingCube.AimState);
+        //    }
+        //}
     }
 }

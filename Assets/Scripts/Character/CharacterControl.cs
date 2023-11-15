@@ -126,8 +126,6 @@ public class CharacterControl
         {
             view.AimPoint.gameObject.SetActive(false);
         }
-
-        Debug.DrawRay(ray.origin, ray.direction * model.SwingLength, Color.red);
         return hit;
     }
 
@@ -147,7 +145,7 @@ public class CharacterControl
         isSwinging = true;
         view.swingJoint = view.gameObject.AddComponent<SpringJoint>();
         view.swingJoint.autoConfigureConnectedAnchor = false;
-        view.swingJoint.connectedAnchor = hit.point;
+        view.swingJoint.connectedBody = hit.collider.GetComponent<Rigidbody>();
 
         float distance = Vector3.Distance(view.transform.position, hit.point);
 
@@ -157,8 +155,6 @@ public class CharacterControl
         view.swingJoint.spring = view.spring;
         view.swingJoint.damper = view.damper;
         view.swingJoint.massScale = view.massScale;
-
-        view.lineRenderer.positionCount = 2;
     }
 
     public void EndSwing(InputAction.CallbackContext context)
@@ -169,7 +165,6 @@ public class CharacterControl
         }
         isSwinging = false;
         Object.Destroy(view.swingJoint);
-        view.lineRenderer.positionCount = 0;
     }
 
     #endregion
