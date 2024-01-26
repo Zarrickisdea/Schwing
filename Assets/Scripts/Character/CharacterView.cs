@@ -12,6 +12,7 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform aimPoint;
     [SerializeField] private LevelGenerator levelGenerator;
+    [SerializeField] private ScoreManager scoreManager;
 
     #endregion
 
@@ -21,6 +22,7 @@ public class CharacterView : MonoBehaviour
     private InputAction moveAction;
     private MeshRenderer aimObjectMeshRenderer;
     private Subject levelSubject = new Subject();
+    private Subject scoreSubject = new Subject();
 
     #endregion
 
@@ -66,6 +68,11 @@ public class CharacterView : MonoBehaviour
         if (levelGenerator != null)
         {
             levelSubject.AddObserver(levelGenerator);
+        }
+
+        if (scoreManager != null)
+        {
+            scoreSubject.AddObserver(scoreManager);
         }
 
         if (aimPoint != null)
@@ -119,6 +126,7 @@ public class CharacterView : MonoBehaviour
         if (other.CompareTag(CustomTags.Spawn))
         {
             levelSubject.Notify();
+            scoreSubject.Notify();
         }
     }
 
