@@ -10,9 +10,9 @@ public class CharacterView : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Image crosshair;
     [SerializeField] private Transform aimPoint;
     [SerializeField] private LevelGenerator levelGenerator;
+    [SerializeField] private ScoreManager scoreManager;
 
     #endregion
 
@@ -20,7 +20,9 @@ public class CharacterView : MonoBehaviour
 
     private Schwing playerActions;
     private InputAction moveAction;
+    private MeshRenderer aimObjectMeshRenderer;
     private Subject levelSubject = new Subject();
+    private Subject scoreSubject = new Subject();
 
     #endregion
 
@@ -29,6 +31,7 @@ public class CharacterView : MonoBehaviour
     public Rigidbody Rb { get => rb; }
     public Transform AimPoint { get => aimPoint; }
     public Camera PlayerCamera { get => playerCamera; }
+    public MeshRenderer AimObjectMeshRenderer { get => aimObjectMeshRenderer; }
 
     #endregion
 
@@ -36,6 +39,7 @@ public class CharacterView : MonoBehaviour
 
     public SpringJoint swingJoint;
     public LineRenderer lineRenderer;
+    public DistanceJoint2D distanceJoint;
 
     public float spring;
     public float damper;
@@ -65,6 +69,17 @@ public class CharacterView : MonoBehaviour
         {
             levelSubject.AddObserver(levelGenerator);
         }
+
+        if (scoreManager != null)
+        {
+            scoreSubject.AddObserver(scoreManager);
+        }
+
+        if (aimPoint != null)
+        {
+            aimObjectMeshRenderer = aimPoint.gameObject.GetComponent<MeshRenderer>();
+        }
+
     }
 
     private void OnEnable()
@@ -111,6 +126,7 @@ public class CharacterView : MonoBehaviour
         if (other.CompareTag(CustomTags.Spawn))
         {
             levelSubject.Notify();
+            scoreSubject.Notify();
         }
     }
 
@@ -122,16 +138,21 @@ public class CharacterView : MonoBehaviour
     {
         if (swingJoint == null)
         {
+            lineRenderer.positionCount = 0;
             return;
         }
 
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, swingJoint.connectedAnchor);
+        lineRenderer.positionCount = 4;
+
+        for (int i = 0; i < lineRenderer.positionCount; i++)
+        {
+            lineRenderer.SetPosition(i, Vector3.Lerp(transform.position, swingJoint.connectedBody.transform.position, i / (float)(lineRenderer.positionCount - 1f)));
+        }
     }
 
     private void HeightCheck()
     {
-        if (transform.position.y < -15)
+        if (transform.position.y < -30f)
         {
             SceneManager.LoadScene(SceneNames.GameOverScene);
             ResetCursor();

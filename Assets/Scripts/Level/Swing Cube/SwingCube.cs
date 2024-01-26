@@ -1,15 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SwingCube : MonoBehaviour
 {
     [SerializeField] private MeshRenderer cubeMeshRenderer;
-    [SerializeField] private SphereCollider cubeSphereCollider;
 
     private StateMachine cubeStateMachine;
+    private Rigidbody rb;
 
     public SwingCubeStartState StartState;
     public SwingCubeViableState ViableState;
+    public SwingCubeChangeState ChangingState;
     public SwingCubeAimState AimState;
 
     public Material CubeColor
@@ -20,11 +20,11 @@ public class SwingCube : MonoBehaviour
         }
     }
 
-    public BaseState CurrentState
+    public Rigidbody Rb
     {
         get
         {
-            return cubeStateMachine.currentState;
+            return rb;
         }
     }
 
@@ -33,7 +33,11 @@ public class SwingCube : MonoBehaviour
         cubeStateMachine = new StateMachine();
         StartState = new SwingCubeStartState(this);
         ViableState = new SwingCubeViableState(this);
+        ChangingState = new SwingCubeChangeState(this);
         AimState = new SwingCubeAimState(this);
+
+        rb = GetComponent<Rigidbody>();
+
     }
 
     private void Update()
@@ -73,6 +77,14 @@ public class SwingCube : MonoBehaviour
         if (cubeStateMachine.currentState != null)
         {
             cubeStateMachine.currentState.ResolveTriggerExit(other);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (cubeStateMachine.currentState != null)
+        {
+            cubeStateMachine.currentState.ResolveTriggerStay(other);
         }
     }
 
