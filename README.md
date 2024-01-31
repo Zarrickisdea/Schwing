@@ -10,10 +10,10 @@ The game currently has a procedurally generated infinte level system and a movem
 ## Video
 
 
-https://github.com/Zarrickisdea/Schwing/assets/77843021/34b5dc3c-8714-4f00-8fd6-37239ac73535
+https://github.com/Zarrickisdea/Schwing/assets/77843021/3aa62bea-52ee-4689-946c-92126c7d477c
 
 
-Game version as of 29/10/2023
+Game version as of 25/1/2024
 
 
 
