@@ -18,7 +18,6 @@ Game version as of 25/1/2024
 
 
 ## Currently in development
-- Proper scoring system based on distance travelled
 - Actual art
 - Dynamic obstacle generation
 
